@@ -1,0 +1,146 @@
+name: Automated Test In CI
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+     - cron: '0 10 * * 1' 
+
+jobs:
+  JMeter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Execute JMeter
+        uses:  rbhadti94/apache-jmeter-action@v0.4.0
+        with:
+            testFilePath: './apache-jmeter-5.5/bin/Browsing Threads.jmx'
+            outputReportsFolder: 'Jmeter/result'
+     
+      - name: Archive test results
+        if: always()  
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeterReport
+          path: Jmeter/result
+
+  Nightwatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with: 
+          cache: 'npm'
+            
+      - name: 'Use Node.js ${{ matrix.node-version }}'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+      
+      - name: Install Dependency npm-install
+        run: |
+            cd Nightwatch_Test-main
+            npm ci
+            sudo apt-get install xvfb
+                 
+      - name: Execute Nightwatch tests
+        run: |
+             cd Nightwatch_Test-main
+             xvfb-run --auto-servernum npm test -- --env chrome
+            
+      - name: Archive test results
+        if: always()  
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightwatch-results
+          path: Nightwatch/tests_output 
+
+  Postman:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: install Newman
+        run: |
+          cd Postman
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+          
+      - name: Execute Postman Test
+        run: |
+            cd Postman
+            newman run "Assignment1_postman_collection.json" -e "Postman_Assignment1_postman_environment.json" -r cli,htmlextra --reporter-htmlextra-export testArtifacts/htmlreport.html
+        
+      - name: Archive test results
+        if: always()  
+        uses: actions/upload-artifact@v4
+        with:
+          name: postmanReport
+          path: Postman/testArtifacts
+    
+  RestAssured:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Execute Rest Assured test
+        run: |
+             cd RestAssignent 1
+             mvn clean test
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restAssuredReport
+          path: RestAssignent 1/target/surefire-reports
+
+  Selenium:
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+    
+      - name: Execute Selenium test
+        run: |
+            cd NewSelenium-main
+            mvn clean test 
+            
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seleniumReport
+          path: NewSelenium-main/target/surefire-reports
