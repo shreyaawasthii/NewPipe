@@ -14,19 +14,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      - name: Execute JMeter
-        uses:  rbhadti94/apache-jmeter-action@v0.4.0
-        with:
-            testFilePath: './apache-jmeter-5.5/bin/Browsing jmeterAssignment/Browsing_Threads.jmx
-'
-            outputReportsFolder: 'Jmeter/result'
-     
+      - name: Run JMeter Tests
+        run: |
+          cd bin
+          $HOME/apache-jmeter/bin/jmeter -n -t Browsing_Threads.jmx -l ../results.jtl
+          
       - name: Archive test results
         if: always()  
         uses: actions/upload-artifact@v4
         with:
           name: jmeterReport
-          path: Jmeter/result
+          path: Jmeter
 
   Nightwatch:
     runs-on: ubuntu-latest
