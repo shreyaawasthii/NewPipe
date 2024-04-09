@@ -14,10 +14,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+ 
+      - name: Download and Install JMeter
+        run: |
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xf apache-jmeter-5.6.3.tgz
+          sudo mv apache-jmeter-5.6.3 /opt/
+          echo 'export PATH=/opt/apache-jmeter-5.6.3/bin:$PATH' >> ~/.bashrc
+          source ~/.bashrc
       - name: Run JMeter Tests
-        run: | 
-          chmod +x ./jmeterAssignment/Browsing_Threads.jmx  
-          ./jmeterAssignment/Browsing_Threads.jmx -n -t Browsing_Threads.jmx -l ./results.jtl -p list.csv
+        run: /opt/apache-jmeter-5.6.3/bin/jmeter -n -t "jmeterAssignment/Browsing_Threads.jmx"
+ 
           
           
       - name: Archive test results
