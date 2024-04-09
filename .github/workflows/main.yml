@@ -16,7 +16,9 @@ jobs:
       
       - name: Run JMeter Tests
         run: | 
-          jmeterAssignment -n -t Browsing_Threads.jmx -l ../results.jtl
+          chmod +x jmeterAssignment  # Ensure the script is executable
+          ./jmeterAssignment -n -t Browsing_Threads.jmx -l ./results.jtl -p list.csv
+          
           
       - name: Archive test results
         if: always()  
