@@ -15,8 +15,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Run JMeter Tests
-        run: |
-          cd jmeterAssignment 
+        run: | 
           jmeterAssignment -n -t Browsing_Threads.jmx -l ../results.jtl
           
       - name: Archive test results
