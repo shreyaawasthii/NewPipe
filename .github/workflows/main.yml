@@ -120,12 +120,9 @@ jobs:
       - name: Install Maven
         run: sudo apt-get install maven -y
 
-      - name: Print Current Directory
-        run: pwd
-
       - name: Build and Test
         run: mvn test -Dtest=CRUDTest -X
-        working-directory: "NewPipe/RestAssignent 1"
+        working-directory: "RestAssignent 1"
       
       - name: Archive test results
         if: always()
