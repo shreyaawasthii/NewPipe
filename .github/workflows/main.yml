@@ -17,7 +17,7 @@ jobs:
       - name: Run JMeter Tests
         run: | 
           chmod +x jmeterAssignment  # Ensure the script is executable
-          ./jmeterAssignment -n -t Browsing_Threads.jmx -l ./results.jtl -p list.csv
+          ./jmeterAssignment/Browsing_Threads.jmx -n -t Browsing_Threads.jmx -l ./results.jtl -p list.csv
           
           
       - name: Archive test results
