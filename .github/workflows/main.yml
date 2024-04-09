@@ -16,7 +16,7 @@ jobs:
       
       - name: Run JMeter Tests
         run: |
-          cd bin
+          cd jmeterAssignment 
           $HOME/apache-jmeter/bin/jmeter -n -t Browsing_Threads.jmx -l ../results.jtl
           
       - name: Archive test results
