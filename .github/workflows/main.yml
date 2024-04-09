@@ -125,7 +125,8 @@ jobs:
 
       - name: Build and Test
         run: mvn test -Dtest=CRUDTest -X
-        working-directory: "/home/runner/work/Rest-Assured/Rest-Assured/RestAssignent 1"
+        working-directory: "NewPipe/RestAssignent 1"
+      
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v4
